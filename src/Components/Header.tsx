@@ -1,5 +1,9 @@
-import { PageHeader, Row, InputNumber, Col, Space, Select } from "antd";
-import { colHeaderStyle, headerInputStyle, headerStyles } from "../Constants/Styles";
+import { Col, InputNumber, PageHeader, Row, Space } from "antd";
+import {
+  colHeaderStyle,
+  headerInputStyle,
+  headerStyles,
+} from "../Constants/Styles";
 
 interface HeaderProps {}
 
@@ -9,32 +13,20 @@ const Header: React.FC<HeaderProps> = () => {
       className="site-page-header"
       title="Finanzas App"
       style={headerStyles}
-      subTitle="App para llevar registros de ingresos y gastos"
+      subTitle="Por Cristian Gomez y Edward Andrés"
       extra={[
         <Row>
           <Space>
             <Col style={colHeaderStyle}>
-              <Col>Moneda</Col>
-              <Col>
-                <Select style={headerInputStyle} />
-              </Col>
-            </Col>
-            <Col style={colHeaderStyle}>
               <Col>Saldo Inicial</Col>
               <Col>
-                <InputNumber
-                  min={0}
-                  style={headerInputStyle}
-                />
+                <InputNumber min={0} style={headerInputStyle} />
               </Col>
             </Col>
             <Col style={colHeaderStyle}>
               <Col>Saldo Final</Col>
               <Col>
-                <InputNumber
-                  min={0}
-                  style={headerInputStyle}
-                />
+                <InputNumber min={0} style={headerInputStyle} />
               </Col>
             </Col>
           </Space>

@@ -1,3 +1,9 @@
+export const genericStyles = {
+  w100: {
+    width: '100%',
+  }
+}
+
 export const headerStyles = {
   borderBottom: "1px solid",
   borderBottomColor: "#e9ecef",
