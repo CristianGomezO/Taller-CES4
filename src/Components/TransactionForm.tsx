@@ -11,10 +11,10 @@ interface TransactionFormProps {}
 const styles = {
   ...genericStyles,
   mainRowStyles: {
-    height: "90%",
+    height: "80%",
     backgroundColor: Colors.snowWhite,
     borderTopLeftRadius: 10,
-    borderTopRightRadius: 10
+    borderTopRightRadius: 10,
   },
   secondRow: {
     backgroundColor: Colors.snowWhite,
@@ -45,11 +45,18 @@ const TransactionForm: React.FC<TransactionFormProps> = () => {
 
   return (
     <>
+      <Row justify="center" align="middle">
+        <Col style={styles.p10}>Registro</Col>
+      </Row>
       <Row style={styles.mainRowStyles}>
         <Row style={styles.w100} justify="center" align="middle">
           <Col span={6}>Tipo de Movimiento</Col>
           <Col span={6}>
-            <Select defaultValue={""} style={styles.selectStyles} onChange={handleChangeSelect}>
+            <Select
+              defaultValue={""}
+              style={styles.selectStyles}
+              onChange={handleChangeSelect}
+            >
               <Option value={""}>Seleccione</Option>
               <Option value={transactionTypeSelect.income.slug}>
                 {transactionTypeSelect.income.label}
@@ -62,11 +69,15 @@ const TransactionForm: React.FC<TransactionFormProps> = () => {
         </Row>
         <Row style={styles.w100} justify="center" align="middle">
           <Col span={6}>Nombre</Col>
-          <Col span={6}><Input placeholder="Nombre" /></Col>
+          <Col span={6}>
+            <Input placeholder="Nombre" />
+          </Col>
         </Row>
         <Row style={styles.w100} justify="center" align="middle">
           <Col span={6}>Cantidad</Col>
-          <Col span={6}><Input placeholder="Cantidad" /></Col>
+          <Col span={6}>
+            <Input placeholder="Cantidad" />
+          </Col>
         </Row>
       </Row>
       <Row style={styles.secondRow} justify="center" align="middle">

@@ -1,6 +1,5 @@
 import { Col, Row } from "antd";
 import "antd/dist/antd.min.css";
-import "./App.css";
 import Header from "./Components/Header";
 import TransactionForm from "./Components/TransactionForm";
 import TransactionList from "./Components/TransactionList";

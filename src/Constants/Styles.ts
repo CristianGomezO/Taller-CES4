@@ -1,6 +1,12 @@
 export const genericStyles = {
   w100: {
     width: '100%',
+  },
+  p10: {
+    padding: 10
+  },
+  m10: {
+    margin: 10
   }
 }
 
