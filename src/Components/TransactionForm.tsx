@@ -2,11 +2,9 @@ import { Button, Col, Input, Row, Select } from "antd";
 import React from "react";
 import { Colors } from "../Constants/Colors";
 import { genericStyles } from "../Constants/Styles";
-import { ETransactionType } from "../types";
+import { ETransactionType, ITransaction } from "../types";
 
 const { Option } = Select;
-
-interface TransactionFormProps {}
 
 const styles = {
   ...genericStyles,
@@ -38,10 +36,36 @@ const transactionTypeSelect = {
   },
 };
 
-const TransactionForm: React.FC<TransactionFormProps> = () => {
-  const handleChangeSelect = React.useCallback((value: string) => {
-    console.log(`selected ${value}`);
-  }, []);
+interface TransactionFormProps {
+  selectedTransaction?: ITransaction;
+  onEditTransaction: (transaction: ITransaction) => void;
+  onCreateTransaction: (transaction: ITransaction) => void;
+  setSelectedTransaction: (t: ITransaction) => void;
+}
+
+const TransactionForm: React.FC<TransactionFormProps> = ({
+  selectedTransaction,
+  setSelectedTransaction,
+  onCreateTransaction,
+  onEditTransaction,
+}) => {
+  const handleChangeSelect = React.useCallback(
+    (value: string) => {
+      const aTemp = { ...selectedTransaction };
+      aTemp.type = value as ETransactionType;
+      setSelectedTransaction(aTemp as ITransaction);
+    },
+    [selectedTransaction, setSelectedTransaction]
+  );
+
+  const handleChangeInput = React.useCallback(
+    (field: any, value: string) => {
+      const aTemp = { ...selectedTransaction };
+      aTemp[field] = value;
+      setSelectedTransaction(aTemp as ITransaction);
+    },
+    [selectedTransaction, setSelectedTransaction]
+  );
 
   return (
     <>
@@ -54,6 +78,7 @@ const TransactionForm: React.FC<TransactionFormProps> = () => {
           <Col span={6}>
             <Select
               defaultValue={""}
+              value={selectedTransaction?.type}
               style={styles.selectStyles}
               onChange={handleChangeSelect}
             >
@@ -70,22 +95,36 @@ const TransactionForm: React.FC<TransactionFormProps> = () => {
         <Row style={styles.w100} justify="center" align="middle">
           <Col span={6}>Nombre</Col>
           <Col span={6}>
-            <Input placeholder="Nombre" />
+            <Input
+              placeholder="Nombre"
+              onChange={(e) => handleChangeInput("name", e.target.value)}
+              value={selectedTransaction?.name}
+            />
           </Col>
         </Row>
         <Row style={styles.w100} justify="center" align="middle">
           <Col span={6}>Cantidad</Col>
           <Col span={6}>
-            <Input placeholder="Cantidad" />
+            <Input
+              onChange={(e) => handleChangeInput("value", e.target.value)}
+              placeholder="Cantidad"
+              value={selectedTransaction?.value}
+            />
           </Col>
         </Row>
       </Row>
       <Row style={styles.secondRow} justify="center" align="middle">
-        <Col span={6}>
-          <Button type="primary">Cancelar</Button>
-        </Col>
-        <Col span={6}>
-          <Button type="primary">Agregar Movimiento</Button>
+        <Col>
+          <Button
+            onClick={() => {
+              selectedTransaction !== undefined
+                ? onEditTransaction(selectedTransaction)
+                : onCreateTransaction(selectedTransaction);
+            }}
+            type="primary"
+          >
+            {selectedTransaction ? "Editar Movimiento" : "Agregar Movimiento"}
+          </Button>
         </Col>
       </Row>
     </>

@@ -3,10 +3,11 @@ import {
   EditOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
-import { Button, Checkbox, Col, Input, List, Row } from "antd";
+import { Button, Checkbox, Col, Input, List, Popconfirm, Row } from "antd";
 import React from "react";
 import { Colors } from "../Constants/Colors";
 import { genericStyles } from "../Constants/Styles";
+import { ETransactionType, IFilterOpts, ITransaction } from "../types";
 import "./../css/TransactionList.css";
 
 const styles = {
@@ -18,22 +19,49 @@ const styles = {
   },
 };
 
-interface TransactionListProps {}
+interface TransactionListProps {
+  transactions: ITransaction[];
+  filterActive: IFilterOpts;
+  filteredTransactions: ITransaction[];
+  filterOpts: IFilterOpts[];
+  search: string;
+  setSearch: (s: string) => void;
+  onFilterPress: (filterOpt: IFilterOpts) => void;
+  onDeleteTransaction: (_id: string) => void;
+  setSelectedTransaction: (t: ITransaction) => void;
+}
 
-const data = ["sfd", "sfd", "sfd", "sfd", "sfd", "sfd", "sfd", "sfd"];
-
-const TransactionList: React.FC<TransactionListProps> = () => {
+const TransactionList: React.FC<TransactionListProps> = ({
+  transactions,
+  filterActive,
+  filteredTransactions,
+  filterOpts,
+  search,
+  setSearch,
+  onFilterPress,
+  onDeleteTransaction,
+  setSelectedTransaction,
+}) => {
   return (
     <>
       <Row justify="center" align="middle">
-        <Col style={styles.p10}>Listado de movimientos</Col>
+        <Col span={12} style={styles.p10}>
+          Listado de movimientos
+        </Col>
+        <Col span={12} style={styles.p10}>
+          <Row justify="center" align="middle">
+            <Col style={{ marginRight: 20 }}>Total:</Col>
+            <Col>
+              <div className={"badge blueColor"}>{transactions.length}</div>
+            </Col>
+          </Row>
+        </Col>
       </Row>
       <Row style={styles.mainRowStyles}>
         <Row
           style={{
             width: "100%",
             marginTop: 20,
-            // backgroundColor: "red",
             height: 50,
           }}
           justify="center"
@@ -41,27 +69,29 @@ const TransactionList: React.FC<TransactionListProps> = () => {
         >
           <Col span={6} style={styles.m10}>
             <Input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
               prefix={<SearchOutlined />}
               placeholder="Buscar registro..."
             />
           </Col>
           <Col span={12}>
             <Row justify="center" align="middle">
-              <Col span={6} style={styles.m10}>
-                <Checkbox defaultChecked={true}>Todos</Checkbox>
-              </Col>
-              <Col span={6} style={styles.m10}>
-                <Checkbox>Ingreso</Checkbox>
-              </Col>
-              <Col span={6} style={styles.m10}>
-                <Checkbox>Gasto</Checkbox>
-              </Col>
+              {filterOpts.map((filter, idx) => (
+                <Col key={idx} span={6} style={styles.m10}>
+                  <Checkbox
+                    onClick={() => onFilterPress(filter)}
+                    checked={filter.checked}
+                  >
+                    {filter.label}
+                  </Checkbox>
+                </Col>
+              ))}
             </Row>
           </Col>
         </Row>
         <Row
           style={{
-            // backgroundColor: "gray",
             height: "60%",
             margin: 10,
             width: "100%",
@@ -75,7 +105,14 @@ const TransactionList: React.FC<TransactionListProps> = () => {
               }}
               size="small"
               bordered
-              dataSource={data}
+              rowKey={(key) => key._id}
+              dataSource={
+                search !== "" ||
+                filterActive.filterName === ETransactionType.INCOME ||
+                filterActive.filterName === ETransactionType.EXPENSE
+                  ? filteredTransactions
+                  : transactions
+              }
               renderItem={(item) => (
                 <List.Item>
                   <Row
@@ -86,21 +123,36 @@ const TransactionList: React.FC<TransactionListProps> = () => {
                     <Col span={18}>
                       <Row>
                         <Col span={2} style={styles.m10}>
-                          <Button shape="circle" icon={<EditOutlined />} />
+                          <Button
+                            shape="circle"
+                            onClick={() => setSelectedTransaction(item)}
+                            icon={<EditOutlined />}
+                          />
                         </Col>
                         <Col span={2} style={styles.m10}>
-                          <Button shape="circle" icon={<DeleteOutlined />} />
+                          <Popconfirm
+                            title="Seguro que deseas eliminar el registro"
+                            onConfirm={() => onDeleteTransaction(item._id)}
+                            okText="Si"
+                            cancelText="No"
+                          >
+                            <Button shape="circle" icon={<DeleteOutlined />} />
+                          </Popconfirm>
                         </Col>
                         <Col span={15} style={{ paddingTop: 15 }}>
-                          {item}
+                          {item.name}
                         </Col>
                       </Row>
                     </Col>
                     <Col span={6} style={{ paddingLeft: 20 }}>
                       <div
-                        className={true ? "badge greenColor" : "badge redColor"}
+                        className={
+                          item.type === ETransactionType.INCOME
+                            ? "badge greenColor"
+                            : "badge redColor"
+                        }
                       >
-                        21232332332
+                        {item.value}
                       </div>
                     </Col>
                   </Row>
