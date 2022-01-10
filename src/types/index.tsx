@@ -6,7 +6,7 @@ export enum ETransactionType {
 export interface ITransaction {
   _id: string;
   name: string;
-  value: number;
+  value: string;
   type: ETransactionType;
 }
 
@@ -14,4 +14,9 @@ export interface IFilterOpts {
   filterName: string;
   label: string;
   checked: boolean;
+}
+
+export interface IBalances {
+  initialBalance: number;
+  finalBalance: number;
 }

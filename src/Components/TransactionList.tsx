@@ -52,7 +52,7 @@ const TransactionList: React.FC<TransactionListProps> = ({
           <Row justify="center" align="middle">
             <Col style={{ marginRight: 20 }}>Total:</Col>
             <Col>
-              <div className={"badge blueColor"}>{transactions.length}</div>
+              <div className={"badge blueColor"}>{transactions?.length}</div>
             </Col>
           </Row>
         </Col>

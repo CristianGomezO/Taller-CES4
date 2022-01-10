@@ -4,11 +4,9 @@ import React from "react";
 import Header from "./Components/Header";
 import TransactionForm from "./Components/TransactionForm";
 import TransactionList from "./Components/TransactionList";
-import {
-  filterOptsInitialValue,
-  transactionsMock,
-} from "./Constants/InitialValues";
+import { balances, filterOptsInitialValue } from "./Constants/InitialValues";
 import { ETransactionType, IFilterOpts, ITransaction } from "./types";
+import { showNotification } from "./utils/notifications";
 
 const styles = {
   rowContainer: {
@@ -23,10 +21,10 @@ const styles = {
 };
 
 function App() {
-  const [transactions, setTransactions] =
-    React.useState<ITransaction[]>(transactionsMock);
-  const [filteredTransactions, setFilteredTransactions] =
-    React.useState<ITransaction[]>(transactionsMock);
+  const [transactions, setTransactions] = React.useState<ITransaction[]>([]);
+  const [filteredTransactions, setFilteredTransactions] = React.useState<
+    ITransaction[]
+  >([]);
   const [search, setSearch] = React.useState<string>("");
   const [filterActive, setFilterActive] = React.useState<IFilterOpts>({
     checked: true,
@@ -39,6 +37,9 @@ function App() {
   const [selectedTransaction, setSelectedTransaction] = React.useState<
     ITransaction | undefined
   >(undefined);
+  const [finalBalance, setFinalBalance] = React.useState<number>(
+    balances.finalBalance
+  );
 
   const onDeleteTransaction = React.useCallback(
     (_id: string) => {
@@ -50,6 +51,7 @@ function App() {
       const idxFilteredDeleteTransaction = aTempFiltered.findIndex(
         (transac) => transac._id === _id
       );
+
       if (idxDeleteTransaction !== -1) {
         aTemp.splice(idxDeleteTransaction, 1);
         aTempFiltered.splice(idxFilteredDeleteTransaction, 1);
@@ -74,10 +76,41 @@ function App() {
     [filterOpts]
   );
 
-  const onCreateTransaction = React.useCallback((transaction: ITransaction) => {
-    // TODO: hacer el metodo de create transaction
-    console.log("Proximamente...");
-  }, []);
+  const onCreateTransaction = React.useCallback(
+    (transaction: ITransaction) => {
+      if (
+        transaction.type === ETransactionType.EXPENSE &&
+        parseInt(transaction.value) > finalBalance
+      ) {
+        return showNotification(
+          "error",
+          "ERROR",
+          "No cuentas con la cantidad suficiente para realizar el movimiento"
+        );
+      } 
+      
+      if(!transaction.type){
+        return showNotification(
+          "error",
+          "ERROR",
+          "El tipo de la transacción es requerido"
+        );
+      }
+
+      transaction._id = String(Math.floor(Math.random() * 100000) + 1);
+
+      setTransactions([...transactions, transaction]);
+      setSelectedTransaction(undefined);
+      showNotification(
+        "success",
+        "Info",
+        `${
+          transaction.type === ETransactionType.EXPENSE ? "Gasto" : "Ingreso"
+        } agregado con exito`
+      );
+    },
+    [finalBalance, transactions]
+  );
 
   const onEditTransaction = React.useCallback(
     (transaction: ITransaction) => {
@@ -150,9 +183,32 @@ function App() {
     }
   }, [search, onSearchTransaction, filterActive.filterName]);
 
+  const calculateFinalBalance = React.useCallback(() => {
+    const aTemp = [...transactions];
+    let sumExpense = 0;
+
+    aTemp
+      .filter((x) => x.type === ETransactionType.EXPENSE)
+      .map((x) => (sumExpense += parseInt(x.value)));
+
+    let sumIncome = 0;
+
+    aTemp
+      .filter((x) => x.type === ETransactionType.INCOME)
+      .map((x) => (sumIncome += parseInt(x.value)));
+
+    const tempFinalBalance = balances.initialBalance + sumIncome - sumExpense;
+    setFinalBalance(tempFinalBalance);
+  }, [transactions]);
+
+  React.useEffect(() => {
+    calculateFinalBalance();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [transactions]);
+
   return (
     <>
-      <Header />
+      <Header finalBalance={finalBalance} />
       <Row style={{ ...styles.rowContainer, ...styles.p10, ...styles.m10 }}>
         <Col span={12} style={{ ...styles.p10 }}>
           <TransactionForm

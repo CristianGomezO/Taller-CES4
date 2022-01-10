@@ -99,6 +99,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
               placeholder="Nombre"
               onChange={(e) => handleChangeInput("name", e.target.value)}
               value={selectedTransaction?.name}
+              required
             />
           </Col>
         </Row>
@@ -107,8 +108,10 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
           <Col span={6}>
             <Input
               onChange={(e) => handleChangeInput("value", e.target.value)}
+              type="number"
               placeholder="Cantidad"
               value={selectedTransaction?.value}
+              required
             />
           </Col>
         </Row>
@@ -117,13 +120,13 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
         <Col>
           <Button
             onClick={() => {
-              selectedTransaction !== undefined
+              selectedTransaction?._id !== undefined
                 ? onEditTransaction(selectedTransaction)
                 : onCreateTransaction(selectedTransaction);
             }}
             type="primary"
           >
-            {selectedTransaction ? "Editar Movimiento" : "Agregar Movimiento"}
+            {selectedTransaction?._id ? "Editar Movimiento" : "Agregar Movimiento"}
           </Button>
         </Col>
       </Row>

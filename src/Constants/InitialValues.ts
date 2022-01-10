@@ -1,19 +1,6 @@
-import { ETransactionType, IFilterOpts, ITransaction } from "../types";
+import { ETransactionType, IBalances, IFilterOpts } from "../types";
 
-export const transactionsMock: ITransaction[] = [
-  {
-    _id: String(Math.floor(Math.random() * 100000) + 1),
-    name: "Salario developer",
-    type: ETransactionType.INCOME,
-    value: 10000000,
-  },
-  {
-    _id: String(Math.floor(Math.random() * 100000) + 1),
-    name: "Gastos de alimentacion",
-    type: ETransactionType.EXPENSE,
-    value: 500000,
-  },
-];
+export const balances: IBalances = { initialBalance: 10000000, finalBalance: 10000000 }
 
 export const filterOptsInitialValue: IFilterOpts[] = [
   {
