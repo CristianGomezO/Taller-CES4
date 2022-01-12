@@ -7,6 +7,7 @@ import TransactionList from "./Components/TransactionList";
 import { balances, filterOptsInitialValue } from "./Constants/InitialValues";
 import { ETransactionType, IFilterOpts, ITransaction } from "./types";
 import { showNotification } from "./utils/notifications";
+import { transactionsValidation } from "./utils/validations";
 
 const styles = {
   rowContainer: {
@@ -78,35 +79,9 @@ function App() {
 
   const onCreateTransaction = React.useCallback(
     (transaction: ITransaction) => {
-      if (
-        transaction.type === ETransactionType.EXPENSE &&
-        parseInt(transaction.value) > finalBalance
-      ) {
-        return showNotification(
-          "error",
-          "ERROR",
-          "No cuentas con la cantidad suficiente para realizar el movimiento"
-        );
-      }
-
-      if (!transaction.type) {
-        return showNotification(
-          "error",
-          "ERROR",
-          "El tipo del movimiento es requerido"
-        );
-      }else if(!transaction.name){
-        return showNotification(
-          "error",
-          "ERROR",
-          "El movimiento debe tener un nombre"
-        );
-      }else if(parseInt(transaction.value) <= 0){
-        return showNotification(
-          "error",
-          "ERROR",
-          "La cantidad debe ser mayor a cero"
-        );
+      const validations = transactionsValidation(transaction, finalBalance);
+      if (validations.code === 400) {
+        return showNotification("error", "ERROR", validations.message);
       }
 
       transaction._id = String(Math.floor(Math.random() * 100000) + 1);
@@ -127,6 +102,13 @@ function App() {
 
   const onEditTransaction = React.useCallback(
     (transaction: ITransaction) => {
+      console.log(transaction);
+      
+      const validations = transactionsValidation(transaction, finalBalance);
+      if (validations.code === 400) {
+        return showNotification("error", "ERROR", validations.message);
+      }
+
       const aTemp = [...transactions];
       const idxUpdatedTransaction = transactions.findIndex(
         (t) => t._id === transaction._id
@@ -138,7 +120,7 @@ function App() {
         setSelectedTransaction(undefined);
       }
     },
-    [transactions]
+    [finalBalance, transactions]
   );
 
   const onFilterPress = React.useCallback(

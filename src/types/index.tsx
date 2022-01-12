@@ -21,3 +21,8 @@ export interface IBalances {
   initialBalance: number;
   finalBalance: number;
 }
+
+export interface IResponse {
+  message?: string;
+  code: number;
+}
