@@ -99,7 +99,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
               placeholder="Nombre"
               onChange={(e) => handleChangeInput("name", e.target.value)}
               value={selectedTransaction?.name}
-              required
+              required={true}
             />
           </Col>
         </Row>

@@ -7,6 +7,7 @@ export interface ITransaction {
   _id: string;
   name: string;
   value: string;
+  valueLocal?: string;
   type: ETransactionType;
 }
 

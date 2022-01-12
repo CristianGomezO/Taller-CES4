@@ -23,13 +23,13 @@ const Header: React.FC<HeaderProps> = ({finalBalance}) => {
             <Col style={colHeaderStyle}>
               <Col>Saldo Inicial</Col>
               <Col>
-                <InputNumber readOnly={true} style={headerInputStyle} value={balances.initialBalance}/>
+                <InputNumber readOnly={true} style={headerInputStyle} value={balances.initialBalance.toLocaleString()}/>
               </Col>
             </Col>
             <Col style={colHeaderStyle}>
               <Col>Saldo Final</Col>
               <Col>
-                <InputNumber readOnly={true} style={headerInputStyle} value={finalBalance}/>
+                <InputNumber readOnly={true} style={headerInputStyle} value={finalBalance.toLocaleString()}/>
               </Col>
             </Col>
           </Space>

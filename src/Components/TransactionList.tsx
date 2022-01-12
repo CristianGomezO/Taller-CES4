@@ -152,7 +152,7 @@ const TransactionList: React.FC<TransactionListProps> = ({
                             : "badge redColor"
                         }
                       >
-                        {item.value}
+                        {item.valueLocal}
                       </div>
                     </Col>
                   </Row>

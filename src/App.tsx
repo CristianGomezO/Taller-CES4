@@ -87,17 +87,30 @@ function App() {
           "ERROR",
           "No cuentas con la cantidad suficiente para realizar el movimiento"
         );
-      } 
-      
-      if(!transaction.type){
+      }
+
+      if (!transaction.type) {
         return showNotification(
           "error",
           "ERROR",
-          "El tipo de la transacción es requerido"
+          "El tipo del movimiento es requerido"
+        );
+      }else if(!transaction.name){
+        return showNotification(
+          "error",
+          "ERROR",
+          "El movimiento debe tener un nombre"
+        );
+      }else if(parseInt(transaction.value) <= 0){
+        return showNotification(
+          "error",
+          "ERROR",
+          "La cantidad debe ser mayor a cero"
         );
       }
 
       transaction._id = String(Math.floor(Math.random() * 100000) + 1);
+      transaction.valueLocal = parseInt(transaction.value).toLocaleString();
 
       setTransactions([...transactions, transaction]);
       setSelectedTransaction(undefined);
@@ -119,6 +132,7 @@ function App() {
         (t) => t._id === transaction._id
       );
       if (idxUpdatedTransaction > -1) {
+        transaction.valueLocal = parseInt(transaction.value).toLocaleString();
         aTemp[idxUpdatedTransaction] = transaction;
         setTransactions(aTemp);
         setSelectedTransaction(undefined);
